@@ -1,0 +1,134 @@
+include:
+#  - project: 'devops/modules-gitlabci'
+#    file: lint/docker-lint.yaml
+
+variables:
+  ECR_IMG: admrockitfront
+
+stages:
+#  - lint
+  - build-staging
+  - deploy-staging
+  - build-production
+  - deploy-production
+
+build-staging:
+  stage: build-staging
+  only:
+    - staging
+  image:
+    name: docker:latest
+  services:
+    - docker:19-dind
+  script:
+    - apk add --no-cache curl jq python3 py3-pip
+    - pip install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region us-east-1
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+    - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$ECR_IMG:$CI_COMMIT_SHORT_SHA --build-arg API_URL=$API_URL_HK .
+    - docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$ECR_IMG:$CI_COMMIT_SHORT_SHA
+    - echo Created the following image - $ECR_IMG:$CI_COMMIT_SHORT_SHA
+  tags:
+    - cntlog
+
+build-production:
+  stage: build-production
+  only:
+    - main
+    - master
+  image:
+    name: docker:latest
+  services:
+    - docker:19-dind
+  script:
+    - apk add --no-cache curl jq python3 py3-pip
+    - pip install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region us-east-1
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+    - docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$ECR_IMG:$CI_COMMIT_SHORT_SHA --build-arg API_URL=$API_URL_PROD .
+    - docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/$ECR_IMG:$CI_COMMIT_SHORT_SHA
+    - echo Created the following image - $ECR_IMG:$CI_COMMIT_SHORT_SHA
+  tags:
+    - cntlog
+
+deploy-staging:
+  stage: deploy-staging
+  only:
+    - staging
+  variables:
+    SERVICE_NAME: hk-${ECR_IMG}
+    API_URL: ${API_URL_HK}
+    ACCESS_URL: ${ACCESS_URL_HK}
+  image:
+    name: docker:latest
+  services:
+    - docker:19-dind
+  script:
+    - apk add --no-cache curl jq python3 py3-pip
+    - pip install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region us-east-1
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+    - sed -i "s,_AWS_ACCOUNT_ID_,${AWS_ACCOUNT_ID},g" docker-compose.yaml
+    - sed -i "s,_SWARM_NODE_,${SWARM_NODE},g" docker-compose.yaml
+    - sed -i "s,_SERVICE_NAME_,${SERVICE_NAME},g" docker-compose.yaml
+    - sed -i "s,_ECR_IMG_,${ECR_IMG},g" docker-compose.yaml
+    - sed -i "s,_CI_COMMIT_SHORT_SHA_,${CI_COMMIT_SHORT_SHA},g" docker-compose.yaml
+    - sed -i "s,_API_URL_,${API_URL},g" docker-compose.yaml
+    - sed -i "s,_ACCESS_URL_,${ACCESS_URL},g" docker-compose.yaml
+    - mkdir -p ~/.ssh
+    - (umask  077 ; echo $SSH_PRIVATE_KEY_DOCKER_1 | base64 -d > ~/.ssh/10.1.1.173.pem)
+    - ssh -i ~/.ssh/10.1.1.173.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@10.1.1.173 mkdir -p /docker-compose/${SERVICE_NAME}
+    - scp -i ~/.ssh/10.1.1.173.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null docker-compose.yaml ubuntu@10.1.1.173:/docker-compose/${SERVICE_NAME}/
+    - docker stack deploy --with-registry-auth -c docker-compose.yaml up
+  after_script:
+    - sleep 15
+    - docker service ps up_${SERVICE_NAME} | grep -i running
+    - if [ $? == 0 ] ; then exit 0 ; else  exit 1 ; fi
+  tags:
+    - cntlog
+
+
+deploy-production:
+  stage: deploy-production
+  only:
+    - main
+    - master
+  variables:
+    SERVICE_NAME: ${ECR_IMG}
+    API_URL: ${API_URL_PROD}
+    ACCESS_URL: ${ACCESS_URL_PROD}
+  image:
+    name: docker:latest
+  services:
+    - docker:19-dind
+  script:
+    - apk add --no-cache curl jq python3 py3-pip
+    - pip install awscli
+    - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+    - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+    - aws configure set region us-east-1
+    - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+    - sed -i "s,_AWS_ACCOUNT_ID_,${AWS_ACCOUNT_ID},g" docker-compose.yaml
+    - sed -i "s,_SWARM_NODE_,${SWARM_NODE},g" docker-compose.yaml
+    - sed -i "s,_SERVICE_NAME_,${SERVICE_NAME},g" docker-compose.yaml
+    - sed -i "s,_ECR_IMG_,${ECR_IMG},g" docker-compose.yaml
+    - sed -i "s,_CI_COMMIT_SHORT_SHA_,${CI_COMMIT_SHORT_SHA},g" docker-compose.yaml
+    - sed -i "s,_API_URL_,${API_URL},g" docker-compose.yaml
+    - sed -i "s,_ACCESS_URL_,${ACCESS_URL},g" docker-compose.yaml
+    - mkdir -p ~/.ssh
+    - (umask  077 ; echo $SSH_PRIVATE_KEY_DOCKER_1 | base64 -d > ~/.ssh/10.1.1.173.pem)
+    - ssh -i ~/.ssh/10.1.1.173.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null ubuntu@10.1.1.173 mkdir -p /docker-compose/${SERVICE_NAME}
+    - scp -i ~/.ssh/10.1.1.173.pem -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null docker-compose.yaml ubuntu@10.1.1.173:/docker-compose/${SERVICE_NAME}/
+    - docker stack deploy --with-registry-auth -c docker-compose.yaml up
+  after_script:
+    - sleep 15
+    - docker service ps up_${SERVICE_NAME} | grep -i running
+    - if [ $? == 0 ] ; then exit 0 ; else  exit 1 ; fi
+  tags:
+    - cntlog

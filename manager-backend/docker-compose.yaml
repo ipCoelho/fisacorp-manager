@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+
+  fisacorp-back:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: fisacorp-back
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: fisacorp-mysql
+      DB_PORT: 3306
+
+  fisacorp-mysql:
+    image: mysql:latest
+    container_name: fisacorp-mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345678
+      MYSQL_DATABASE: fisacorp-mysql
+      MYSQL_USER: developer
+      MYSQL_PASSWORD: 12345678

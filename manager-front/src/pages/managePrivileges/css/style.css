@@ -1,0 +1,51 @@
+.manage-privilegies-title-container {
+  display: flex;
+  flex-direction: row;
+}
+
+.manage-privilegies-flex-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 380px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.manage-privilegies-select-group {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 50%;
+  gap: 20px;
+}
+
+.manage-privilegies-sellers-checkboxes {
+  flex-flow: column wrap;
+  height: 100%;
+  width: 50%;
+}
+
+.manage-privilegies-sellers-checkboxgroup {
+  display: flex;
+  flex-direction: column;
+  height: 80%;
+  width: 100%;
+  font-weight: bold;
+  overflow-y: auto;
+}
+
+.manage-privilegies-button {
+  width: 60px;
+  height: 30px;
+}
+
+.manage-privileges-sellers-title::first-letter {
+  color: '#FF4D4F';
+}
+
+@media only screen and (min-height: 768px) {
+  .manage-privilegies-flex-container {
+    height: 750px;
+  }
+}

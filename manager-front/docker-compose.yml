@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+  adm-rockit-front:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    container_name: adm-rockit-front
+    volumes:
+      - ./:/app
+    environment:
+      TZ: "America/Sao_Paulo"
+    ports:
+      - "3000:3000"
+    networks:
+      - bridge
+
+networks:
+  bridge:
+    name: adm-rockit
+    external: true
