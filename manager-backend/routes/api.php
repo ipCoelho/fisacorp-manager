@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\TaskController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\UserController;
 
@@ -25,5 +26,10 @@ Route::prefix('feature-api')->group(function () {
     Route::middleware('ensure.token:api')->group(function () {
         Route::get('/user/{name}', [UserController::class, 'show']);
         Route::post('/user', [UserController::class, 'store']);
+        Route::get('/user/{id}/tasks', [UserController::class, 'userTasks']);
+
+        Route::get('task/{id}', [TaskController::class, 'show']);
+        Route::post('task', [TaskController::class, 'store']);
+        Route::delete('task/{id}', [TaskController::class, 'destroy']);
     });
 });
