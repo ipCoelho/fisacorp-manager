@@ -9,7 +9,7 @@ import api from '../../services/api'
 
 import logoLogin from '../../public/image/logo-login-forgot.png'
 
-import './css/index.css'
+import './css/index.scss'
 
 import { signIn } from '../../services/auth';
 import { useAuth } from '../../hooks/AuthContext';
@@ -30,7 +30,7 @@ export default function Login() {
 
       const { data } = await signIn({ email: email, password: password });
 
-      localStorage.setItem('token', data.token)
+      // localStorage.setItem('token', data.token)
 
       api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
 
