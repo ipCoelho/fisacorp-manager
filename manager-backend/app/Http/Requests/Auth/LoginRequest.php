@@ -3,7 +3,6 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
 class LoginRequest extends FormRequest
@@ -30,8 +29,8 @@ class LoginRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.required' => 'Campo Email é obrigatório!',
-            'password.required' => 'Campo Senha é obrigatório!',
+            'email.required' => 'A email is required.',
+            'password.required' => 'A password is required.',
         ];
     }
 }
