@@ -8,17 +8,18 @@ class CreateUserRequest extends FormRequest
 {
     public function authorize()
     {
-        return auth()->check();
+        return true;
     }
 
-    public function rules() {
+    public function rules()
+    {
         return [
             'username' => 'required|unique:users,username',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|min:8',
         ];
     }
-    
+
     public function messages()
     {
         return [
