@@ -1,0 +1,53 @@
+@import "../../assets/scss/variables.scss";
+
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: white;
+  
+  .register-box {
+    background-color: #fff;
+    padding: 1.8rem 6rem 6rem 6rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+    width: 650px;
+    height: 600px;  // Adjusted height for more input fields
+    text-align: center;
+    border: 1px solid rgba($color: black, $alpha: 0.3);
+
+    .register-logo {
+      width: 150px;
+      height: auto;
+      margin-bottom: 2rem;
+    }
+
+    .register-input {
+      margin-bottom: 1rem;
+      border-radius: 15px !important;
+
+      &:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline {
+        border-color: $primary-color;
+      }
+
+      & .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+        border-color: $primary-color;
+      }
+
+      & .MuiInputLabel-outlined.Mui-focused {
+        color: $primary-color;
+      }
+    }
+
+    .register-button {
+      font-size: 16px;
+      text-transform: capitalize;
+      font-weight: bold;
+      margin-top: 3rem;
+      width: 200px;
+      border-radius: 15px;
+      background-color: $primary-color;
+    }
+  }
+}

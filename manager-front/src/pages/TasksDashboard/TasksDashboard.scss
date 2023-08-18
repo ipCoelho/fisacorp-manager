@@ -1,0 +1,125 @@
+@import "../../assets/scss/variables.scss";
+
+.main-task-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  .task-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0.8rem 12vw;
+    background-color: #ECECEC;
+    height: 220px;
+
+    .logo {
+      width: 200px;
+      margin-bottom: 1rem;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      width: 100%;
+      padding: 0 2rem;
+      margin-bottom: 1rem;
+
+      .user-photo {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-left: 1rem;
+        background-color: #fff;
+      }
+    }
+  }
+
+  .task-insertion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: 90%;
+    margin: -45px 0;
+
+    .MuiTextField-root {
+      flex: none;
+      width: 42rem; 
+      border-radius: 1rem !important;
+      height: 3.4rem;
+      box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+      .MuiOutlinedInput-root {
+        border-radius: 10px !important;
+        background-color: white;
+
+        &:hover .MuiOutlinedInput-notchedOutline,
+        &.Mui-focused .MuiOutlinedInput-notchedOutline {
+          border-color: $primary-color;
+        }
+
+        input {
+          height: 3.4rem;
+          padding: 0 1rem;
+        }
+
+        .MuiOutlinedInput-notchedOutline {
+          border: none !important;
+        }
+      }
+    }
+
+    .add-task-btn {
+      width: 12.5rem;
+      height: 3.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-transform: capitalize;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 16px;
+      background-color: $primary-color;
+
+      .add-icon {
+        margin-left: 0.5rem;
+        border-radius: 50%;
+      }
+    }
+  }
+
+  .task-content {
+    width: 45%;
+    margin-top: 6rem;
+
+    .task-overview {
+      display: flex;              
+      justify-content: space-between;
+      margin-bottom: 3rem;
+      border-bottom: 1px solid black; 
+      padding-bottom: 1rem;      
+    }
+
+    .task-list {
+      margin-top: 2rem;
+    
+      .task-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+        border: 1px solid lightgray;
+        border-radius: 8px;
+        margin-bottom: 1rem;
+        background-color: #f5f5f5;
+    
+        &:hover {
+          background-color: #e0e0e0;
+        }
+      }
+    }
+  }
+}

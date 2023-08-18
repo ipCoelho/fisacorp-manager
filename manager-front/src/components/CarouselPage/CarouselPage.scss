@@ -1,0 +1,19 @@
+@import "../../assets/scss/variables.scss";
+
+.carousel-page {
+  margin: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: fit-content;
+
+  .carousel-page-side {
+    display: flex;
+    width: 45rem;
+    height: 700px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
