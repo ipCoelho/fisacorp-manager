@@ -5,25 +5,29 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Services\UserService;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 
     protected $userService;
 
-    public function __construct(UserService $userService) {
+    public function __construct(UserService $userService)
+    {
         $this->userService = $userService;
     }
 
-    public function show($id) {
+    public function show($id)
+    {
         $user = $this->userService->findById($id);
 
-        if(!$user) {
+        if (!$user) {
             return response()->json(['message' => 'User not found'], 404);
         }
 
         return response()->json($user);
     }
 
-    public function store(CreateUserRequest $request) {
+    public function store(CreateUserRequest $request)
+    {
         $input = $request->all();
         $input['password'] = bcrypt($input['password']);
 
@@ -32,7 +36,8 @@ class UserController extends Controller {
         return response()->json(['message' => 'User created', 'data' => $user], 200);
     }
 
-    public function userTasks($id) {
+    public function userTasks($id)
+    {
         $tasks = $this->userService->findUserTasks($id);
 
         if (!$tasks) {

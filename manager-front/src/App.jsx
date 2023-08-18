@@ -1,5 +1,4 @@
 import { BrowserRouter as Router } from 'react-router-dom';
-import { AuthProvider } from './hooks/AuthContext';
 import Routes from './router';
 
 import { ThemeProvider, CssBaseline } from '@mui/material';
@@ -25,9 +24,7 @@ export default function App() {
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <Router>
-        <AuthProvider>
-          <Routes />
-        </AuthProvider>
+        <Routes />
       </Router>
     </ThemeProvider>
   );

@@ -4,6 +4,7 @@ import logo from '../../assets/svg/fisacorp-logo.svg';
 import { Link, Button, Menu, MenuItem } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CarouselContext } from '../../contexts/CarouselContext';
+import { Router, Link as RouterLink } from 'react-router-dom';
 
 export default function Header({ onLinkClick }) {
   const { activeSlide, setActiveSlide } = useContext(CarouselContext);
@@ -86,26 +87,26 @@ export default function Header({ onLinkClick }) {
           onClose={handleClose}
         >
           <MenuItem className="header-menu-item" onClick={handleClose}>
-            <Link
+            <RouterLink
+              to="/login"
               className="header-links header-dropdown-links"
               underline="none"
-              to="/login"
             >
               Login
-            </Link>
+            </RouterLink>
           </MenuItem>
           <div className="dropdown-separator"></div>
           <MenuItem
             className="header-menu-item create-account"
             onClick={handleClose}
           >
-            <Link
+            <RouterLink
+              to="/register"
               className="header-links header-dropdown-links"
-              href="#"
               underline="none"
             >
               Criar Conta
-            </Link>
+            </RouterLink>
           </MenuItem>
         </Menu>
       </div>

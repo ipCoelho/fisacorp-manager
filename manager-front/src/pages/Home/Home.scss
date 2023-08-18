@@ -1,18 +1,18 @@
 @import "../../assets/scss/variables.scss";
 
 body, html {
-  height: 100%; // Ensure that the body and html take up the full viewport height
-  overflow-x: hidden; // Prevent horizontal scroll
+  height: 100%;
+  overflow-x: hidden;
 }
 
 div {
-  box-sizing: border-box; // This ensures padding and borders don't add to the total width
+  box-sizing: border-box;
 }
 
 .home-container {
   display: flex;
-  flex-direction: column; // Stacks children vertically
-  min-height: 100%; // Takes up at least the full height of the viewport
+  flex-direction: column;
+  min-height: 100%;
 }
 
 .carousel-wrapper {
@@ -24,22 +24,22 @@ div {
 
 .carousel-wrapper .next-page-btn {
   position: absolute;
-  right: 12.5vw;     // Adjust as needed
-  bottom: 9rem;   // Adjust as needed
+  right: 12.5vw;    
+  bottom: 9rem;  
   width: 4.4rem;
   height: 4.4rem;
   border-radius: 50%;
-  border: none; // Remove any default border styling
-  background-color: $primary-color; // or any color you want
-  color: white; // Font color
-  font-size: 2rem; // Adjust as needed
+  border: none;
+  background-color: $primary-color;
+  color: white;
+  font-size: 2rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer; // Indicates it's clickable
+  cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: darken($primary-color, 10%); // Slightly darken on hover
+    background-color: darken($primary-color, 10%);
   }
 }
