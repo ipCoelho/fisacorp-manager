@@ -6,21 +6,47 @@ import CircleRounded from '@mui/icons-material/CircleRounded';
 import CheckCircleOutlinedIcon from '@mui/icons-material/CircleOutlined';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { createTask, deleteTask, getTasks } from '../../services/tasks';
 
 export default function TasksDashboard() {
-  const [username, setUsername] = useState('Fulano');
+  const [username, setUsername] = useState('usuário');
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState([]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const user = localStorage.getItem('username');
+    const userId = localStorage.getItem('id'); // Assuming you have userId stored in localStorage
 
-  const handleAddTask = () => {
+    setUsername(user);
+
+    async function fetchTasks() {
+      try {
+        const { data: fetchedTasks } = await getTasks(userId);
+        setTasks(fetchedTasks);
+      } catch (error) {
+        console.error('Error fetching tasks:', error);
+      }
+    }
+
+    fetchTasks();
+  }, []);
+
+  const handleAddTask = async () => {
     if (task) {
-      setTasks([
-        ...tasks,
-        { id: tasks.length + 1, text: task, completed: false },
-      ]);
-      setTask('');
+      try {
+        const { data: createdTask, status } = await createTask({
+          title: new Date().toString(),
+          description: task,
+          fulfilled: false,
+          user_id: localStorage.getItem('id'),
+        });
+
+        if (status <= 299) {
+          window.location.reload();
+        }
+      } catch (error) {
+        console.error('Error creating task:', error);
+      }
     }
   };
 
@@ -31,7 +57,15 @@ export default function TasksDashboard() {
     setTasks(updatedTasks);
   };
 
-  const handleDeleteTask = (taskId) => {};
+  const handleDeleteTask = async (taskId) => {
+    try {
+      await deleteTask(taskId);
+      const updatedTasks = tasks.filter((t) => t.id !== taskId);
+      setTasks(updatedTasks);
+    } catch (error) {
+      console.error('Error deleting task:', error);
+    }
+  };
 
   return (
     <div className="main-task-container">
@@ -44,6 +78,7 @@ export default function TasksDashboard() {
         </div>
         <img src={logo} alt="Logo" className="logo" />
       </header>
+
       <div className="task-insertion">
         <TextField
           variant="outlined"
@@ -53,12 +88,13 @@ export default function TasksDashboard() {
         <Button
           variant="contained"
           color="primary"
-          onClick={handleAddTask}
+          onClick={() => handleAddTask()}
           className="add-task-btn"
         >
           Criar <AddCircleOutlineIcon className="add-icon" />
         </Button>
       </div>
+
       <main className="task-content">
         <div className="task-overview">
           <Typography
@@ -75,29 +111,36 @@ export default function TasksDashboard() {
             {tasks.length}
           </Typography>
         </div>
+
         <div className="task-list">
-          {tasks.map((t) => (
-            <div className="task-item" key={t.id}>
-              {t.completed ? (
-                <CircleRounded
-                  style={{ color: '#15E823' }}
-                  onClick={() => handleMarkAsFinished(t.id)}
+          {tasks.length > 0 || console.log(tasks) ? (
+            tasks.map((t) => (
+              <div className="task-item" key={t.id}>
+                {t.completed ? (
+                  <CircleRounded
+                    style={{ color: '#15E823' }}
+                    onClick={() => handleMarkAsFinished(t.id)}
+                  />
+                ) : (
+                  <CheckCircleOutlinedIcon
+                    style={{ color: '#15E823' }}
+                    onClick={() => handleMarkAsFinished(t.id)}
+                  />
+                )}
+                <Typography style={{ fontSize: '14px' }} variant="body1">
+                  {t.description}
+                </Typography>
+                <DeleteForeverOutlinedIcon
+                  style={{ color: '#3D443D' }}
+                  onClick={() => handleDeleteTask(t.id)}
                 />
-              ) : (
-                <CheckCircleOutlinedIcon
-                  style={{ color: '#15E823' }}
-                  onClick={() => handleMarkAsFinished(t.id)}
-                />
-              )}
-              <Typography style={{ fontSize: '14px' }} variant="body1">
-                {t.text}
-              </Typography>
-              <DeleteForeverOutlinedIcon
-                style={{ color: '#3D443D' }}
-                onClick={() => handleDeleteTask(t.id)}
-              />
-            </div>
-          ))}
+              </div>
+            ))
+          ) : (
+            <Typography style={{ fontSize: '16px', textAlign: 'center' }}>
+              Você ainda não possui tarefas.
+            </Typography>
+          )}
         </div>
       </main>
     </div>
