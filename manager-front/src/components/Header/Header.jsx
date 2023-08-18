@@ -4,7 +4,7 @@ import logo from '../../assets/svg/fisacorp-logo.svg';
 import { Link, Button, Menu, MenuItem } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { CarouselContext } from '../../contexts/CarouselContext';
-import { Router, Link as RouterLink } from 'react-router-dom'; // <-- Important: give it a different name to avoid conflict with MUI Link.
+import { Router, Link as RouterLink } from 'react-router-dom';
 
 export default function Header({ onLinkClick }) {
   const { activeSlide, setActiveSlide } = useContext(CarouselContext);
