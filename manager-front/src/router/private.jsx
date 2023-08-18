@@ -6,6 +6,7 @@ function PrivateRoutes() {
       <Sidebar>
         <Routes>
           <Route path="*" element={<NotFound />} />
+          <Route path="/tasks" element={<TasksDashboard />} />
         </Routes>
       </Sidebar>
     </>

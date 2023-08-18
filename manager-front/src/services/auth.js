@@ -8,6 +8,10 @@ export async function getUser() {
   return await api.get('/me');
 }
 
+export async function register() {
+  return await api.post('/user');
+}
+
 export async function forgotPassword(email) {
   // return await api.post('/forgot-password', email);
 }

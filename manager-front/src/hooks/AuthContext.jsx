@@ -22,9 +22,7 @@ export const AuthProvider = ({ children }) => {
     if (!storagedToken) {
       setGlobalLoading(false);
       setUser(null);
-      pathname === '/forgot-password'
-        ? navigate('/forgot-password')
-        : navigate('/login');
+      pathname === '/forgot-password' ? navigate('/forgot-password') : null;
       return;
     }
 
@@ -58,14 +56,14 @@ export const AuthProvider = ({ children }) => {
     if (data.status === 401) {
       localStorage.clear();
       setUser(null);
-      return navigate('/login');
+      return null;
     }
   }
 
   function handleLogout() {
     signOut({ token: localStorage.getItem('token') });
     localStorage.clear();
-    return navigate('/login');
+    return null;
   }
 
   return (

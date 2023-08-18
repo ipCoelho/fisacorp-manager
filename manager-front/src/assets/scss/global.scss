@@ -1,7 +1,15 @@
 @import './variables.scss';
 
+body, * {
+  font-family: 'Montserrat', sans-serif !important;
+}
+
 html, body, #root {
   height: 100%;
+}
+
+html {
+  font-size: 16px;
 }
 
 body {
@@ -9,11 +17,10 @@ body {
   color: #333;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f4;
-  }
+}
   
 h1, h2, h3, h4, h5, h6 {
-  font-family: $heading-font;
+  font-family: $base-font;
 }
 
 a {
