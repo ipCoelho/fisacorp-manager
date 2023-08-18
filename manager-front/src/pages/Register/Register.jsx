@@ -3,7 +3,8 @@ import { Button, TextField, CircularProgress } from '@material-ui/core';
 import './Register.scss';
 import logo from '../../assets/svg/fisacorp-logo.svg';
 import { Typography } from '@mui/material';
-import { register } from '../../services/auth'; // Import the register function
+import { register } from '../../services/auth';
+import { useNavigate } from 'react-router-dom';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ export default function Register() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -32,10 +35,24 @@ export default function Register() {
     }
     setLoading(true);
     try {
-      const response = await register(formData); // Use the register function
-      // Handle successful registration here, e.g., redirect to login page
+      console.log(formData);
+      const response = await register({
+        username: formData.name,
+        password: formData.password,
+        email: formData.email,
+      });
+
+      console.log(response.data, response.status);
+
+      if (response.status <= 299) {
+        console.log('Usuário criado!');
+        navigate('/home');
+      } else {
+        console.log('Erro ao criar usuário!');
+      }
     } catch (err) {
-      setError(err.response?.data?.message || 'Could not register.'); // Axios errors are in err.response.data
+      setError(err.response?.data?.message || 'Could not register.');
+      console.log(err);
     } finally {
       setLoading(false);
     }
@@ -62,6 +79,9 @@ export default function Register() {
           variant="outlined"
           fullWidth
           type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
           className="register-input"
         />
         <form onSubmit={handleSubmit}>
@@ -70,6 +90,9 @@ export default function Register() {
             variant="outlined"
             fullWidth
             type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
             className="register-input"
           />
           <TextField
@@ -77,6 +100,9 @@ export default function Register() {
             variant="outlined"
             fullWidth
             type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
             className="register-input"
           />
           <TextField
@@ -84,11 +110,15 @@ export default function Register() {
             variant="outlined"
             fullWidth
             type="password"
+            name="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
             className="register-input"
           />
           <Button
             variant="contained"
             color="primary"
+            type="submit"
             className="register-button"
           >
             Registrar
